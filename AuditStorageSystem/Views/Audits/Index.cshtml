@@ -1,0 +1,38 @@
+﻿@using AuditStorageSystem.Framework
+@using GridMvc.Html
+@using AuditStorageSystem.Framework.Enum
+@using AuditStorageSystem.Framework.Extensions
+@model IEnumerable<AuditStorageSystem.Models.Audit>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Audits</h2>
+
+<p>
+    @if (ViewBag.IsCreateEnable)
+    {
+        @Html.ActionLink("Create New", "Create")
+    }
+</p>
+
+@Html.Grid(Model).Columns(columns =>
+{
+    columns.Add(audit => audit.Project.Name).Titled(Colomns.ProjectName.GetStringMapping())
+        .Sanitized(false).Encoded(false).RenderValueAs(audit => Html.ActionLink(audit.Project.Name, "Details", new { id = audit.AuditId }))
+        .SetWidth(110).Sortable(true).Filterable(true);
+    columns.Add(audit => audit.ServiceType).Titled(Colomns.ServiceType.GetStringMapping())
+        .RenderValueAs(audit => audit.ServiceType.GetStringMapping()).Sortable(true).Filterable(true);
+    columns.Add(audit => audit.LastAuditDate).Titled(Colomns.AuditLastDate.GetStringMapping()).Format(Constants.DateFormatForView).Sanitized(false).Encoded(false)
+        .RenderValueAs(audit => @<span class="@HelperForAudits.CheckAuditRelevance(audit)">@string.Format(Constants.DateFormatForView, audit.LastAuditDate)</span>)
+        .Sortable(true).Filterable(true);
+    columns.Add(audit => audit.PlannedDate).Titled(Colomns.AuditPlannedDate.GetStringMapping()).Format(Constants.DateFormatForView).Sanitized(false).Encoded(false)
+        .RenderValueAs(audit => @<span class="@HelperForAudits.CheckAuditRelevance(audit)">@string.Format(Constants.DateFormatForView, audit.PlannedDate)</span>)
+        .Sortable(true).Filterable(true);
+    columns.Add(audit => audit.Status).Titled(Colomns.AuditStatus.GetStringMapping()).Sortable(true).Filterable(true);
+    columns.Add(audit => audit.Auditors).Titled(Colomns.Auditors.GetStringMapping()).SetWidth(110).Sortable(true).Filterable(true);
+    columns.Add(audit => audit.Result).Titled(Colomns.Result.GetStringMapping()).Sortable(true).Filterable(true);
+    //columns.Add(audit => audit.AuditId).Titled(Colomns.Actions.GetStringMapping()).Sanitized(false).Encoded(false)
+    //    .RenderValueAs(item => @Html.ActionLink("Edit", "Edit", new {id = item.AuditId}).ToHtmlString());
+}).WithPaging(10)

@@ -1,0 +1,116 @@
+﻿@using System.Collections
+@using System.Data.Entity.Core.Objects
+@using AuditStorageSystem.Framework
+@using AuditStorageSystem.Framework.Enum
+@using AuditStorageSystem.Framework.Extensions
+@using WebGrease.Css.Extensions
+@model IEnumerable<AuditStorageSystem.Models.Audit>
+
+@{
+    ViewBag.Title = "Index";
+    //Layout = "~/Views/_ViewStart.cshtml";
+    var serviceTypesValues = Enum.GetValues(typeof(ServiceTypes));
+
+    var checkedServiceTypes = (List<ServiceTypes>)ViewBag.CheckedServiceTypes;
+}
+
+<h2>Calendar</h2>
+
+@using (Html.BeginForm())
+{
+    <p>
+        <b>YEAR:</b>
+        <br>
+        <input type="Button" id='DecreaseYear' value="-"/>
+        @Html.TextBox("YEAR")
+        <input type="Button" id='IncreaseYear' value="+"/>
+        <br><br>
+        <b>Service Types:</b>
+            <br>
+
+            @for (var count = 0; count < serviceTypesValues.Length; count++)
+            {
+                var currentType = ((ServiceTypes) Enum.GetValues(typeof(ServiceTypes)).GetValue(count));
+                var currentTypeValue = currentType.GetStringMapping();
+
+
+                if (checkedServiceTypes.Contains(currentType))
+                {
+                    <input type="checkbox" name="selectedServiceTypes" checked="checked"
+                           id="@(currentTypeValue)" value="@(currentTypeValue)"/>
+                }
+                else
+                {
+                    <input type="checkbox" name="selectedServiceTypes"
+                           id="@(currentTypeValue)" value="@(currentTypeValue)"/>
+                }
+
+
+                <label>@(currentTypeValue)</label>
+
+                if (count % 2 > 0)
+                {
+                    <br>
+                }
+            }
+
+            <input type="submit" value="Search" id="submit" hidden="hidden" />
+
+            <script>
+                $('#IncreaseYear').on('click',
+                    function () {
+                        var input = $('#YEAR');
+                        input.val(parseFloat(input.val()) + 1);
+                        $('#submit').click();
+                    });
+                $('#DecreaseYear').on('click',
+                    function () {
+                        var input = $('#YEAR');
+                        input.val(parseFloat(input.val()) - 1);
+                        $('#submit').click();
+                    });
+                $(document).ready(function () {
+                    $("#YEAR").val(@ViewBag.Year);
+                });
+                $("input[name='selectedServiceTypes']").on('click',
+                    function () {
+                        $('#submit').click();
+                });
+            </script>
+
+</p>
+}
+
+<table class="table">
+
+    @for (int columnCount = 0; columnCount < 12; columnCount = columnCount + 4)
+    {
+        <tr class="not-hover">
+            @for (int rowCount = 1 + columnCount; rowCount < 5 + columnCount; rowCount++)
+            {
+                <td class="hover">
+                    <span class="calendar-header-cell h4">
+                        @(((Months) rowCount).GetStringMapping())
+                    </span>
+                    <p/>
+                    @foreach (var audit in Model.Where(enrty => enrty.PlannedDate.Month == rowCount))
+                    {
+                        <br>
+                        <span class="calendar-cell @HelperForAudits.GetAuditStyleForCalendar(audit)">
+                            @*@Html.ActionLink(audit.Project.Name, "Details", "Audits", new {id = audit.AuditId}, new {@class = HelperForAudits.CheckAuditRelevance(audit)})*@
+                            @Html.ActionLink($"{audit.Project.Name} ({audit.ServiceType.GetStringMapping()})", "Details", "Audits", new { id = audit.AuditId }, null)
+                        </span>
+                    }
+                </td>
+            }
+        </tr>
+    }
+    <tr/>
+</table>
+<div>
+    AUDITS LEGEND: <br />
+    <span class="audit-planned">Planned</span> <br/>
+    <span class="audit-in-progress">In Progress</span><br />
+    <span class="audit-passed">Passed</span><br />
+    <span class="audit-clossed">Clossed</span>
+</div>

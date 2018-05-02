@@ -1,0 +1,41 @@
+﻿.calendar-header-cell {
+    text-align: center;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.calendar-cell {
+    text-align: center;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+tr:hover:not(.not-hover), .hover:hover {
+    background: #eee8ec !important;
+}
+
+tr:nth-child(odd) {
+ background: #F2F2F0;   
+}
+
+.audit-planned {
+    background: #ffcccc;
+}
+
+.audit-in-progress {
+    background: #ffffcc;
+}
+
+.audit-passed {
+    background: #ccffcc;
+}
+
+.audit-clossed {
+    /*background: #f2f2f2;*/
+}
+
+.multiline
+{
+  padding:20px;
+  white-space: pre-wrap;
+}

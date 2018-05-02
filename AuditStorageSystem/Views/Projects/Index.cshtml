@@ -1,0 +1,39 @@
+﻿@using GridMvc.Html
+@using AuditStorageSystem.Framework
+@using AuditStorageSystem.Framework.Enum
+@using AuditStorageSystem.Framework.Extensions
+@model IEnumerable<AuditStorageSystem.Models.ProjectView>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Projects</h2>
+
+<p>
+    @if (ViewBag.IsCreateEnable)
+    {
+        @Html.ActionLink("Create New", "Create")
+    }
+</p>
+
+@Html.Grid(Model).Named("ProjectsGrid").Columns(columns =>
+{
+    columns.Add(project => project.Project.Name).Titled(Colomns.ProjectName.GetStringMapping())
+        .Sanitized(false).Encoded(false).RenderValueAs(project => Html.ActionLink(project.Project.Name, "Details", new { id = project.Project.ProjectId }))
+        .SetWidth(110).Sortable(true).Filterable(true);
+    columns.Add(project => project.Project.Status).Titled(Colomns.ProjectStatus.GetStringMapping())
+        .RenderValueAs(project => project.Project.Status.GetStringMapping()).Sortable(true).Filterable(true);
+    columns.Add(project => project.LastAuditValue).Titled(Colomns.AuditLastDate.GetStringMapping()).Sortable(true).Filterable(true);
+    columns.Add(project => project.PlannedAuditsValue).Titled(Colomns.AuditsPlannedDate.GetStringMapping()).Sortable(true).Filterable(true);
+    columns.Add(project => project.Project.UnitCoordinator).Titled(Colomns.UnitCoordinator.GetStringMapping()).Sortable(true).Filterable(true);
+    columns.Add(project => project.Project.UnitManager).Titled(Colomns.UnitManager.GetStringMapping()).Sortable(true).Filterable(true);
+    columns.Add(project => project.Project.ProjectCoordinator).Titled(Colomns.ProjectCoordinator.GetStringMapping()).Sortable(true).Filterable(true);
+    columns.Add(project => project.Project.ProjectManager).Titled(Colomns.ProjectManager.GetStringMapping()).Sortable(true).Filterable(true);
+    columns.Add(audit => audit.Project.JiraKey).Titled(Colomns.JiraKey.GetStringMapping()).Sanitized(false).Encoded(false)
+        .RenderValueAs(project => @<a href="@HelperForProject.GetJiraLink(project.Project.JiraKey)">@project.Project.JiraKey</a>)
+        .Sortable(true).Filterable(true);
+
+    @*//columns.Add(audit => audit.AuditId).Titled(Colomns.Actions.GetStringMapping()).Sanitized(false).Encoded(false)
+    //    .RenderValueAs(item => @Html.ActionLink("Edit", "Edit", new {id = item.AuditId}).ToHtmlString());*@
+}).WithPaging(10)

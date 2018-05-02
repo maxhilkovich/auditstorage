@@ -1,0 +1,97 @@
+﻿@using AuditStorageSystem.Framework
+@model AuditStorageSystem.Models.Project
+
+@{
+    ViewBag.Title = "Projects";
+}
+
+<h2>Projects Details</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+        @*<dt>
+            @Html.DisplayNameFor(model => model.PlannedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlannedDate)
+        </dd>*@
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UnitCoordinator)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UnitCoordinator)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UnitManager)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UnitManager)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProjectCoordinator)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProjectCoordinator)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProjectManager)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProjectManager)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.JiraKey)
+        </dt>
+
+        <dd>
+            <a href="@HelperForProject.GetJiraLink(@Model.JiraKey)">@Model.JiraKey</a>
+        </dd>
+        
+        <dt>
+        </dt>
+
+        <dd>
+            <br>
+            @Html.ActionLink("Audits List", "Index", "Audits", new {id = Model.ProjectId}, null)
+        </dd>
+        
+    </dl>
+</div>
+<p>
+    @if (ViewBag.IsEditEnable)
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.ProjectId })<span> | </span>
+    }
+    @if (ViewBag.IsDeleteEnable)
+    {
+        @Html.ActionLink("Delete", "Delete", new { id = Model.ProjectId })<span> | </span>
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>
